@@ -42,7 +42,7 @@ public:
     * Devuelve la cantidad de apariciones de la clave (0 o 1).
     * Sirve para identificar si una clave está definida o no.
     **/
-    int count(const string &key) const;
+    int count(const string &clave) const;
 
     /**
     AT
@@ -51,9 +51,9 @@ public:
     --PRODUCE ALIASING--
     -- Versión modificable y no modificable
     **/
-    const T &at(const string &key) const;
+    const T &at(const string &clave) const;
 
-    T &at(const string &key);
+    T &at(const string &clave);
 
     /**
     ERASE
@@ -61,7 +61,7 @@ public:
     * PRE: La clave está definida.
     --PRODUCE ALIASING--
     **/
-    void erase(const string &key);
+    void erase(const string &clave);
 
     /**
      SIZE
@@ -90,6 +90,8 @@ private:
         Nodo(T *def);
 
         void destruirHaciaAbajo();
+
+        int cantidadHijos();
     };
 
     Nodo *raiz;
@@ -108,6 +110,9 @@ string_map<T>::Nodo::Nodo() : siguientes(256, nullptr), definicion(nullptr) {}
 template<typename T>
 string_map<T>::Nodo::Nodo(T *def) : siguientes(256, nullptr), definicion(def) {}
 
+/**
+ * destruye el nodo this y todo lo que tenga debajo
+ **/
 template<typename T>
 void string_map<T>::Nodo::destruirHaciaAbajo() {
     for (Nodo *nodo: this->siguientes) {
@@ -118,6 +123,18 @@ void string_map<T>::Nodo::destruirHaciaAbajo() {
     }
     this->definicion = nullptr;
     delete this;
+}
+
+//Dice si este nodo tiene al menos un hijo valido
+template<typename T>
+int string_map<T>::Nodo::cantidadHijos() {
+    int res = 0;
+    for (Nodo* nodo: this->siguientes){
+        if (nodo != nullptr){
+            res++;
+        }
+    }
+    return res;
 }
 
 #include "string_map.hpp"

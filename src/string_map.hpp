@@ -154,9 +154,39 @@ T &string_map<T>::at(const string &clave) {
     return *nodo_actual->definicion;
 }
 
+/**
+ERASE
+* Dada una clave, la borra del diccionario junto a su significado.
+* PRE: La clave está definida.
+--PRODUCE ALIASING--
+**/
 template<typename T>
 void string_map<T>::erase(const string &clave) {
-    // COMPLETAR
+    bool hayQueBorrarTodo = true;
+    Nodo* ultimo_nodo_no_borrable;
+    char primer_char_borrable;
+    Nodo* nodo_actual = this->raiz;
+
+    for (char i : clave){
+        if (nodo_actual->cantidadHijos() > 1){
+            hayQueBorrarTodo = false;
+            ultimo_nodo_no_borrable = nodo_actual;
+            primer_char_borrable = i;
+        }
+        nodo_actual = nodo_actual->siguientes[int(i)];
+    }
+    nodo_actual->definicion = nullptr;
+    this->size_--;
+
+    if (nodo_actual->cantidadHijos() > 0){ //no hay que borrar ningun nodo
+        return;
+    } else if (hayQueBorrarTodo) {
+        this->destruirMapa();
+    } else { //se viene la borrada de nodos
+        Nodo* primer_nodo_borrable = ultimo_nodo_no_borrable->siguientes[int(primer_char_borrable)];
+        ultimo_nodo_no_borrable->siguientes[int(primer_char_borrable)] = nullptr;
+        primer_nodo_borrable->destruirHaciaAbajo();
+    }
 }
 
 template<typename T>
