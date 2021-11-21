@@ -34,14 +34,13 @@ public:
     INSERT 
     * Inserta un par clave, valor en el diccionario
     **/
-    void insert(const pair<string, T>&);
+    void insert(const pair<string, T>& par);
 
     /**
     COUNT
     * Devuelve la cantidad de apariciones de la clave (0 o 1).
     * Sirve para identificar si una clave está definida o no.
     **/
-
     int count(const string &key) const;
 
     /**
@@ -83,11 +82,28 @@ private:
     struct Nodo {
         vector<Nodo*> siguientes;
         T* definicion;
+
+        Nodo();
+        Nodo(T* def);
+        void significar(T** def);
     };
 
     Nodo* raiz;
     int size_;
+
+    void destruirMapa();
 };
+
+template<typename T>
+string_map<T>::Nodo::Nodo() : siguientes(256, nullptr), definicion(nullptr) {}
+
+template<typename T>
+string_map<T>::Nodo::Nodo(T* def) : siguientes(256, nullptr), definicion(def) {}
+
+template<typename T>
+void string_map<T>::Nodo::significar(T **def) {
+    *this->definicion = &def;
+}
 
 #include "string_map.hpp"
 
