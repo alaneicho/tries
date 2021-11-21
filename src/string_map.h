@@ -97,11 +97,9 @@ private:
     Nodo *raiz;
     int size_;
 
-    //Esto me facilita la copia, y nada en el enunciado dice que tengo que respetar ninguna complejidad, je.
-    list<string> palabrasDefinidas_;
-
     void destruirMapa();
-    void copiarSiguientes(Nodo* nodo, Nodo* aCopiar);
+
+    void copiarSiguientes(Nodo *nodo, Nodo *aCopiar);
 };
 
 template<typename T>
@@ -116,7 +114,7 @@ string_map<T>::Nodo::Nodo(T *def) : siguientes(256, nullptr), definicion(def) {}
 template<typename T>
 void string_map<T>::Nodo::destruirHaciaAbajo() {
     for (Nodo *nodo: this->siguientes) {
-        if (nodo != nullptr){
+        if (nodo != nullptr) {
             nodo->destruirHaciaAbajo();
             nodo = nullptr;
         }
@@ -129,8 +127,8 @@ void string_map<T>::Nodo::destruirHaciaAbajo() {
 template<typename T>
 int string_map<T>::Nodo::cantidadHijos() {
     int res = 0;
-    for (Nodo* nodo: this->siguientes){
-        if (nodo != nullptr){
+    for (Nodo *nodo: this->siguientes) {
+        if (nodo != nullptr) {
             res++;
         }
     }

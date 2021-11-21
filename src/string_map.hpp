@@ -18,8 +18,6 @@ string_map<T> &string_map<T>::operator=(const string_map<T> &d) {
         this->raiz = nullptr;
         return *this;
     } else {
-        //this->copiarHaciaAbajo(this->raiz);
-
         if (d.raiz->definicion != nullptr) {
             this->raiz = new Nodo(d.raiz->definicion);
             this->size_++;
@@ -85,19 +83,6 @@ void string_map<T>::insert(const pair<string, T> &par) {
         this->size_++;
     }
     nodo_actual->definicion = new T(par.second);
-
-    /**
-    //Esta parte es para mantener la lista de palabras definidas
-    bool estabaDefinida = false;
-    for (string palabra: this->palabrasDefinidas_) {
-        if (palabra == par.first) {
-            estabaDefinida = true;
-            break;
-        }
-    }
-    if (not estabaDefinida) {
-        this->palabrasDefinidas_.push_back(par.first);
-    } **/
 }
 
 template<typename T>
@@ -163,12 +148,12 @@ ERASE
 template<typename T>
 void string_map<T>::erase(const string &clave) {
     bool hayQueBorrarTodo = true;
-    Nodo* ultimo_nodo_no_borrable;
+    Nodo *ultimo_nodo_no_borrable;
     char primer_char_borrable;
-    Nodo* nodo_actual = this->raiz;
+    Nodo *nodo_actual = this->raiz;
 
-    for (char i : clave){
-        if (nodo_actual->cantidadHijos() > 1 || nodo_actual->definicion != nullptr){
+    for (char i: clave) {
+        if (nodo_actual->cantidadHijos() > 1 || nodo_actual->definicion != nullptr) {
             hayQueBorrarTodo = false;
             ultimo_nodo_no_borrable = nodo_actual;
             primer_char_borrable = i;
@@ -178,12 +163,12 @@ void string_map<T>::erase(const string &clave) {
     nodo_actual->definicion = nullptr;
     this->size_--;
 
-    if (nodo_actual->cantidadHijos() > 0){ //no hay que borrar ningun nodo
+    if (nodo_actual->cantidadHijos() > 0) { //no hay que borrar ningun nodo
         return;
     } else if (hayQueBorrarTodo) {
         this->destruirMapa();
     } else { //se viene la borrada de nodos
-        Nodo* primer_nodo_borrable = ultimo_nodo_no_borrable->siguientes[int(primer_char_borrable)];
+        Nodo *primer_nodo_borrable = ultimo_nodo_no_borrable->siguientes[int(primer_char_borrable)];
         ultimo_nodo_no_borrable->siguientes[int(primer_char_borrable)] = nullptr;
         primer_nodo_borrable->destruirHaciaAbajo();
     }
