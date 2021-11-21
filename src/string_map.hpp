@@ -168,7 +168,7 @@ void string_map<T>::erase(const string &clave) {
     Nodo* nodo_actual = this->raiz;
 
     for (char i : clave){
-        if (nodo_actual->cantidadHijos() > 1){
+        if (nodo_actual->cantidadHijos() > 1 || nodo_actual->definicion != nullptr){
             hayQueBorrarTodo = false;
             ultimo_nodo_no_borrable = nodo_actual;
             primer_char_borrable = i;
