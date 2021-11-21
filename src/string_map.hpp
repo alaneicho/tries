@@ -10,8 +10,48 @@ string_map<T>::string_map(const string_map<T> &aCopiar) : string_map() { *this =
 
 template<typename T>
 string_map<T> &string_map<T>::operator=(const string_map<T> &d) {
-    // COMPLETAR
+
+    this->destruirMapa();
+    this->size_ = 0;
+
+    if (d.empty()) {
+        this->raiz = nullptr;
+        return *this;
+    } else {
+        //this->copiarHaciaAbajo(this->raiz);
+
+        if (d.raiz->definicion != nullptr) {
+            this->raiz = new Nodo(d.raiz->definicion);
+            this->size_++;
+        } else {
+            this->raiz = new Nodo();
+        }
+
+        for (int i = 0; i < d.raiz->siguientes.size(); i++) {
+            if (d.raiz->siguientes[i] != nullptr) {
+                this->raiz->siguientes[i] = new Nodo();
+                this->copiarSiguientes(this->raiz->siguientes[i], d.raiz->siguientes[i]);
+            }
+        }
+    }
+
 }
+
+template<typename T>
+void string_map<T>::copiarSiguientes(string_map::Nodo *nodo, string_map::Nodo *aCopiar) {
+    if (aCopiar->definicion != nullptr) {
+        nodo->definicion = aCopiar->definicion;
+        this->size_++;
+    }
+    for (int i = 0; i < aCopiar->siguientes.size(); i++) {
+        if (aCopiar->siguientes[i] != nullptr) {
+            nodo->siguientes[i] = new Nodo();
+            this->copiarSiguientes(nodo->siguientes[i], aCopiar->siguientes[i]);
+        }
+    }
+
+}
+
 
 template<typename T>
 string_map<T>::~string_map() {
@@ -21,7 +61,12 @@ string_map<T>::~string_map() {
 
 template<typename T>
 void string_map<T>::destruirMapa() {
-
+    if (this->size() == 0) {
+        return;
+    }
+    this->raiz->destruirHaciaAbajo();
+    this->size_ = 0;
+    this->raiz = nullptr;
 }
 
 template<typename T>
@@ -40,6 +85,19 @@ void string_map<T>::insert(const pair<string, T> &par) {
         this->size_++;
     }
     nodo_actual->definicion = new T(par.second);
+
+    /**
+    //Esta parte es para mantener la lista de palabras definidas
+    bool estabaDefinida = false;
+    for (string palabra: this->palabrasDefinidas_) {
+        if (palabra == par.first) {
+            estabaDefinida = true;
+            break;
+        }
+    }
+    if (not estabaDefinida) {
+        this->palabrasDefinidas_.push_back(par.first);
+    } **/
 }
 
 template<typename T>

@@ -2,6 +2,7 @@
 #define STRING_MAP_H_
 
 #include <string>
+#include <list>
 
 using namespace std;
 
@@ -18,12 +19,12 @@ public:
     CONSTRUCTOR POR COPIA
     * Construye un diccionario por copia.
     **/
-    string_map(const string_map<T>& aCopiar);
+    string_map(const string_map<T> &aCopiar);
 
     /**
     OPERADOR ASIGNACION
      */
-    string_map& operator=(const string_map& d);
+    string_map &operator=(const string_map &d);
 
     /**
     DESTRUCTOR
@@ -34,7 +35,7 @@ public:
     INSERT 
     * Inserta un par clave, valor en el diccionario
     **/
-    void insert(const pair<string, T>& par);
+    void insert(const pair<string, T> &par);
 
     /**
     COUNT
@@ -50,8 +51,9 @@ public:
     --PRODUCE ALIASING--
     -- Versión modificable y no modificable
     **/
-    const T& at(const string& key) const;
-    T& at(const string& key);
+    const T &at(const string &key) const;
+
+    T &at(const string &key);
 
     /**
     ERASE
@@ -59,7 +61,7 @@ public:
     * PRE: La clave está definida.
     --PRODUCE ALIASING--
     **/
-    void erase(const string& key);
+    void erase(const string &key);
 
     /**
      SIZE
@@ -80,29 +82,42 @@ public:
 private:
 
     struct Nodo {
-        vector<Nodo*> siguientes;
-        T* definicion;
+        vector<Nodo *> siguientes;
+        T *definicion;
 
         Nodo();
-        Nodo(T* def);
-        void significar(T** def);
+
+        Nodo(T *def);
+
+        void destruirHaciaAbajo();
     };
 
-    Nodo* raiz;
+    Nodo *raiz;
     int size_;
 
+    //Esto me facilita la copia, y nada en el enunciado dice que tengo que respetar ninguna complejidad, je.
+    list<string> palabrasDefinidas_;
+
     void destruirMapa();
+    void copiarSiguientes(Nodo* nodo, Nodo* aCopiar);
 };
 
 template<typename T>
 string_map<T>::Nodo::Nodo() : siguientes(256, nullptr), definicion(nullptr) {}
 
 template<typename T>
-string_map<T>::Nodo::Nodo(T* def) : siguientes(256, nullptr), definicion(def) {}
+string_map<T>::Nodo::Nodo(T *def) : siguientes(256, nullptr), definicion(def) {}
 
 template<typename T>
-void string_map<T>::Nodo::significar(T **def) {
-    *this->definicion = &def;
+void string_map<T>::Nodo::destruirHaciaAbajo() {
+    for (Nodo *nodo: this->siguientes) {
+        if (nodo != nullptr){
+            nodo->destruirHaciaAbajo();
+            nodo = nullptr;
+        }
+    }
+    this->definicion = nullptr;
+    delete this;
 }
 
 #include "string_map.hpp"
